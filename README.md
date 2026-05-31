@@ -316,24 +316,19 @@ Contributions are welcome.
 
 ---
 
-## Support the Project
+## 💖 Support This Project
 
-If this project helps you or your organization, consider supporting its continued development.
+If you find this project useful and would like to support its development, please consider supporting my work! Your support helps keep the project maintained and covers API/Infrastructure costs.
 
-Support link:
-
-https://snippe.me/pay/support-cleven
-
-Your support helps cover:
-
-* Infrastructure costs
-* Development time
-* Testing environments
-* Open-source maintenance
+<p align="center">
+  <a href="https://snippe.me/pay/support-cleven">
+    <img src="https://img.shields.io/badge/Support_Me-Click_Here-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Support Me">
+  </a>
+</p>
 
 ---
 
-## License
+## 📄 License
 
 Distributed under the MIT License.
 
