@@ -1,198 +1,346 @@
-# 🤖 WhatsApp AI Assistant
+# WhatsApp AI Assistant
 
-> Production-ready WhatsApp AI Assistant powered by Retrieval-Augmented Generation (RAG), intelligent LLM routing, conversation memory, and document-based question answering.
+Production-ready WhatsApp AI Assistant powered by Retrieval-Augmented Generation (RAG), intelligent LLM routing, conversation memory, and document-based question answering.
 
 <p align="center">
 
-![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square&logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-Web_App-000000?style=flat-square&logo=flask)
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat-square\&logo=python\&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-Web_App-000000?style=flat-square\&logo=flask)
 ![LangChain](https://img.shields.io/badge/LangChain-Orchestration-1C3C3C?style=flat-square)
 ![Pinecone](https://img.shields.io/badge/Pinecone-Vector_DB-4B2EFF?style=flat-square)
-![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=flat-square&logo=sqlite)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=flat-square\&logo=sqlite)
 
-![WhatsApp](https://img.shields.io/badge/WhatsApp-Cloud_API-25D366?style=flat-square&logo=whatsapp)
-![Groq](https://img.shields.io/badge/Groq-Primary_LLM-F55036?style=flat-square)
-![Gemini](https://img.shields.io/badge/Gemini-Fallback_LLM-4285F4?style=flat-square)
-![OpenAI](https://img.shields.io/badge/OpenAI-Fallback_LLM-412991?style=flat-square&logo=openai)
-![Claude](https://img.shields.io/badge/Claude-Sonnet-D97757?style=flat-square)
-
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker)
-![License](https://img.shields.io/github/license/cleven12/whatsapp-ai-assistant?style=flat-square)
-![Stars](https://img.shields.io/github/stars/cleven12/whatsapp-ai-assistant?style=flat-square)
+![WhatsApp](https://img.shields.io/badge/WhatsApp-Cloud_API-25D366?style=flat-square\&logo=whatsapp)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square\&logo=docker)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
 </p>
 
 ---
 
-## 📖 Overview
+## Overview
 
-WhatsApp AI Assistant is a scalable AI-powered customer support and knowledge assistant that enables users to interact with your organization directly through WhatsApp. It uses a **cost-first LLM routing strategy**, prioritizing fast and cheap models like Llama 3 on Groq before falling back to more powerful models like GPT-4o or Claude 3.5 Sonnet.
+WhatsApp AI Assistant is an open-source platform for building intelligent WhatsApp-based assistants powered by modern Large Language Models and Retrieval-Augmented Generation (RAG).
 
-The system features **Retrieval-Augmented Generation (RAG)**, allowing it to provide accurate, grounded answers based on your private document library stored in a Pinecone vector database.
+The system enables organizations to connect their private knowledge base to WhatsApp, allowing users to receive accurate, context-aware responses directly inside WhatsApp conversations.
+
+Key capabilities include:
+
+* Document-based question answering
+* Multi-provider LLM routing
+* Conversation memory
+* Pinecone-powered semantic search
+* WhatsApp Cloud API integration
+* Docker-based deployment
+* Extensible architecture
 
 ---
 
-## 🏗 Architecture
+## Why This Project?
+
+Most WhatsApp AI assistants rely on a single AI provider.
+
+This project was designed with:
+
+* Vendor independence
+* Cost optimization
+* High availability
+* Modular architecture
+* Production readiness
+
+The built-in routing layer allows the application to automatically switch between providers whenever a model becomes unavailable or reaches usage limits.
+
+---
+
+## Architecture
 
 ```mermaid
-flowchart TD
+flowchart LR
 
-A[WhatsApp User]
+subgraph Users
+U[WhatsApp User]
+end
 
-A --> B[WhatsApp Cloud API]
+subgraph Meta
+W[WhatsApp Cloud API]
+end
 
-B --> C[Flask Backend]
+subgraph Application
+A[Flask Backend]
+M[Conversation Memory]
+R[RAG Engine]
+L[LLM Router]
+end
 
-C --> D[Conversation Memory]
-C --> E[RAG Engine]
+subgraph Knowledge Base
+D[Documents]
+P[Pinecone Vector Database]
+end
 
-E --> F[Document Loader]
-E --> G[Text Splitter]
-E --> H[Pinecone Vector Database]
+subgraph AI Providers
+G[Groq]
+GM[Gemini]
+O[OpenAI]
+C[Claude]
+X[xAI]
+end
 
-H --> I[Relevant Context]
+U --> W
+W --> A
 
-I --> J[LLM Router]
+A --> M
+A --> R
+R --> D
+R --> P
 
-J --> K[Groq]
-J --> L[Gemini]
-J --> M[OpenAI]
-J --> N[Claude]
-J --> O[xAI]
+A --> L
 
-K --> P[Generated Response]
-L --> P
-M --> P
-N --> P
-O --> P
+L --> G
+L --> GM
+L --> O
+L --> C
+L --> X
 
-P --> B
-B --> A
+L --> A
+
+A --> W
+W --> U
 ```
 
 ---
 
-## 🛠 Technology Stack
+## Request Flow
 
-- **Backend**: Flask (Python 3.12)
-- **AI Orchestration**: LangChain
-- **Vector Database**: Pinecone (Serverless)
-- **Primary Database**: SQLite (via SQLAlchemy)
-- **Messaging**: WhatsApp Cloud API (Meta)
-- **Deployment**: Docker & Docker Compose
-- **LLM Providers**: Groq, Google Gemini, OpenAI, Anthropic, xAI
+```mermaid
+sequenceDiagram
 
----
+participant User
+participant WhatsApp
+participant Backend
+participant Pinecone
+participant LLM
 
-## ✨ Key Features
+User->>WhatsApp: Send Message
 
-| Feature               | Description                               |
-| --------------------- | ----------------------------------------- |
-| **RAG Search**        | Context-aware answers from your private documents. |
-| **Smart Routing**     | Automatic fallback through multiple LLM providers. |
-| **Memory**            | SQLite-backed conversation history per user. |
-| **WhatsApp Native**   | Full integration with WhatsApp Cloud API. |
-| **Cost Optimized**    | Uses Groq/Llama3 primarily to minimize API costs. |
-| **Dockerized**        | One-command setup with `docker-compose`. |
+WhatsApp->>Backend: Webhook Event
 
----
+Backend->>Pinecone: Retrieve Context
 
-## 🔄 LLM Fallback Strategy
+Pinecone-->>Backend: Relevant Documents
 
-The assistant follows a strict priority chain to balance cost and capability:
-1. **Groq (Llama 3 70B)**: Ultra-fast and currently free/cheap.
-2. **Google Gemini 1.5 Flash**: High speed, low cost, large context.
-3. **OpenAI GPT-4o Mini**: Reliable, industry standard fallback.
-4. **Anthropic Claude 3.5 Sonnet**: High intelligence for complex queries.
-5. **xAI (Grok)**: Emerging alternative.
+Backend->>LLM: Prompt + Context
+
+LLM-->>Backend: Generated Response
+
+Backend-->>WhatsApp: Reply
+
+WhatsApp-->>User: Deliver Message
+```
 
 ---
 
-## 🚀 Quick Start
+## Features
 
-### 1. Prerequisites
-- [Meta Developer Account](https://developers.facebook.com/) with WhatsApp Cloud API setup.
-- [Pinecone API Key](https://www.pinecone.io/).
-- API Keys for your chosen LLM providers (Groq is highly recommended).
+| Feature              | Description                                               |
+| -------------------- | --------------------------------------------------------- |
+| Document QA          | Answer questions from PDFs, TXT, DOCX and other documents |
+| RAG Retrieval        | Context-aware responses from your knowledge base          |
+| WhatsApp Integration | Native WhatsApp Cloud API support                         |
+| Conversation Memory  | Persistent user chat history                              |
+| Multi-Provider AI    | Groq, Gemini, OpenAI, Claude, xAI                         |
+| Automatic Fallback   | Failover between LLM providers                            |
+| Docker Deployment    | Containerized production deployment                       |
+| Admin Dashboard      | Manage uploaded documents                                 |
+| Cost Optimization    | Prioritizes lower-cost inference providers                |
+| Extensible Design    | Easy integration of additional AI providers               |
 
-### 2. Installation
+---
+
+## Technology Stack
+
+| Layer           | Technology                        |
+| --------------- | --------------------------------- |
+| Backend         | Flask, Python 3.12                |
+| AI Framework    | LangChain                         |
+| Vector Database | Pinecone                          |
+| Database        | SQLite, SQLAlchemy                |
+| Messaging       | WhatsApp Cloud API                |
+| Deployment      | Docker, Docker Compose            |
+| AI Providers    | Groq, Gemini, OpenAI, Claude, xAI |
+
+---
+
+## LLM Routing Strategy
+
+The assistant follows a cost-first routing approach:
+
+1. Groq (Llama 3)
+2. Google Gemini
+3. OpenAI
+4. Claude
+5. xAI
+
+This strategy helps reduce inference costs while maintaining reliability and availability.
+
+---
+
+## Quick Start
+
+### Clone Repository
+
 ```bash
 git clone https://github.com/cleven12/whatsapp-ai-assistant.git
+
 cd whatsapp-ai-assistant
+```
+
+### Configure Environment
+
+```bash
 cp .env.example .env
 ```
 
-### 3. Configuration
-Edit the `.env` file with your credentials:
-```env
-WHATSAPP_TOKEN=your_token
-WHATSAPP_PHONE_NUMBER_ID=your_id
-WHATSAPP_VERIFY_TOKEN=your_chosen_verify_token
+Update your `.env` file:
 
-GROQ_API_KEY=your_key
-PINECONE_API_KEY=your_key
-PINECONE_INDEX_NAME=whatsapp-rag
+```env
+WHATSAPP_TOKEN=
+
+WHATSAPP_PHONE_NUMBER_ID=
+
+WHATSAPP_VERIFY_TOKEN=
+
+GROQ_API_KEY=
+
+PINECONE_API_KEY=
+
+PINECONE_INDEX_NAME=
 ```
 
-### 4. Launch with Docker
+### Run with Docker
+
 ```bash
 docker compose up --build
 ```
-The app will be available at `http://localhost:5000`.
+
+Application:
+
+```text
+http://localhost:5000
+```
 
 ---
 
-## 🔗 Webhook Configuration
+## Webhook Configuration
 
-1. Use **ngrok** to expose your local server: `ngrok http 5000`.
-2. In the Meta Developer Portal, set the Webhook URL to `https://your-ngrok-url/webhook/`.
-3. Set the **Verify Token** to the same value as `WHATSAPP_VERIFY_TOKEN` in your `.env`.
-4. Subscribe to the `messages` field under Webhook fields.
+1. Create a Meta Developer application.
+2. Configure WhatsApp Cloud API.
+3. Expose your application using ngrok.
+
+```bash
+ngrok http 5000
+```
+
+4. Set the generated HTTPS URL as your webhook endpoint.
+5. Use the same verification token configured in `.env`.
+6. Subscribe to the `messages` webhook event.
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 whatsapp-ai-assistant/
-│
+
 ├── app/
-│   ├── routes/          # Webhook and Dashboard endpoints
-│   ├── services/        # WhatsApp API integration
-│   ├── rag/             # Pinecone retrieval logic
-│   ├── llm/             # Fallback routing logic
-│   ├── models/          # Database schemas (User, Message)
-│   └── templates/       # Dashboard HTML
+│   ├── routes/
+│   ├── services/
+│   ├── rag/
+│   ├── llm/
+│   ├── models/
+│   └── templates/
 │
-├── uploads/             # Temporary document storage
-├── vector_store/        # Local vector index (optional)
-├── static/              # CSS/JS for dashboard
-├── docker/              # Docker configuration files
+├── uploads/
+├── static/
+├── docker/
 │
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .env.example
-└── app.py               # Application entry point
+└── app.py
 ```
 
 ---
 
-## 🤝 Contributing
+## Deployment
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Supported deployment targets:
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+* Ubuntu Server
+* Debian
+* DigitalOcean
+* AWS EC2
+* Oracle Cloud
+* Hetzner
+* Railway
+* Render
+* Docker VPS Environments
+
+Recommended deployment:
+
+```bash
+docker compose up -d
+```
+
+---
+
+## Security
+
+* Environment-based secrets management
+* Webhook verification support
+* Docker container isolation
+* No credentials stored in source control
+* Modular architecture for secure deployments
+
+---
+
+## Contributing
+
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to your branch
 5. Open a Pull Request
 
 ---
 
-## 📄 License
+## Support the Project
 
-Distributed under the MIT License. See `LICENSE` for more information.
+If this project helps you or your organization, consider supporting its continued development.
+
+Support link:
+
+https://snippe.me/pay/support-cleven
+
+Your support helps cover:
+
+* Infrastructure costs
+* Development time
+* Testing environments
+* Open-source maintenance
 
 ---
-<p align="center">Made with ❤️ for the AI community</p>
+
+## License
+
+Distributed under the MIT License.
+
+See the `LICENSE` file for details.
+
+---
+
+<p align="center">
+Built for scalable AI-powered customer support and knowledge retrieval on WhatsApp.
+</p>
