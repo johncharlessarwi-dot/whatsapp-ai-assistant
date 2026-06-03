@@ -9,7 +9,7 @@ import logging
 webhook_bp = Blueprint('webhook', __name__)
 logger = logging.getLogger(__name__)
 
-@webhook_bp.route('/', methods=['GET'])
+@webhook_bp.route('/', methods=['GET'], strict_slashes=False)
 def verify():
     mode = request.args.get('hub.mode')
     token = request.args.get('hub.verify_token')
@@ -22,7 +22,7 @@ def verify():
             return 'Forbidden', 403
     return 'Bad Request', 400
 
-@webhook_bp.route('/', methods=['POST'])
+@webhook_bp.route('/', methods=['POST'], strict_slashes=False)
 def handle_message():
     data = request.get_json()
     

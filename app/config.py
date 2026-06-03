@@ -5,7 +5,19 @@ load_dotenv()
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-key-123')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///instance/database.db')
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    # Move up one level if config.py is in app/
+    project_root = os.path.dirname(basedir)
+    
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith('sqlite:///instance/'):
+        db_file = SQLALCHEMY_DATABASE_URI.replace('sqlite:///instance/', '')
+        db_path = os.path.join(project_root, 'instance', db_file)
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
+    elif not SQLALCHEMY_DATABASE_URI:
+        db_path = os.path.join(project_root, 'instance', 'database.db')
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # WhatsApp Config

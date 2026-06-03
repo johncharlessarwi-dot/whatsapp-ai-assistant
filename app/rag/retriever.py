@@ -1,6 +1,6 @@
 from pinecone import Pinecone
-from langchain_community.vectorstores import Pinecone as LangChainPinecone
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_pinecone import PineconeVectorStore as LangChainPinecone
+from langchain_huggingface import HuggingFaceEmbeddings
 from flask import current_app
 import logging
 
