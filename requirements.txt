@@ -9,7 +9,7 @@ langchain-openai
 langchain-google-genai
 langchain-anthropic
 langchain-groq
-pinecone-client
+pinecone
 sentence-transformers
 pypdf
 python-multipart
