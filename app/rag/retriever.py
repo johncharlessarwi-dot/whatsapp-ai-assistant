@@ -24,7 +24,7 @@ class RAGService:
         try:
             vectorstore = LangChainPinecone(
                 self.index, 
-                self.embeddings.embed_query, 
+                self.embeddings, 
                 "text"
             )
             docs = vectorstore.similarity_search(text, k=k)

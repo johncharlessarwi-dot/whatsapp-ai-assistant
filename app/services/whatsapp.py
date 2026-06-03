@@ -8,7 +8,7 @@ class WhatsAppService:
     def __init__(self):
         self.token = current_app.config['WHATSAPP_TOKEN']
         self.phone_number_id = current_app.config['WHATSAPP_PHONE_NUMBER_ID']
-        self.url = f"https://graph.facebook.com/v18.0/{self.phone_number_id}/messages"
+        self.url = f"https://graph.facebook.com/v21.0/{self.phone_number_id}/messages"
         self.headers = {
             "Authorization": f"Bearer {self.token}",
             "Content-Type": "application/json"
