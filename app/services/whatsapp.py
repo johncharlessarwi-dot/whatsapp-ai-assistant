@@ -1,6 +1,8 @@
 import requests
 from flask import current_app
 import logging
+from app.utils.message_policy import validate_outbound_text
+from app.utils.phone import normalize_recipient
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +36,8 @@ class WhatsAppService:
         recipient_number,
         message_text
     ):
+        recipient_number = normalize_recipient(recipient_number)
+        message_text = validate_outbound_text(message_text)
         payload = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
@@ -56,7 +60,7 @@ class WhatsAppService:
             response.raise_for_status()
 
             logger.info(
-                f"Message sent to {recipient_number}"
+                "Message accepted by WhatsApp API"
             )
 
             return {
@@ -69,7 +73,7 @@ class WhatsAppService:
             error_message = str(e)
 
             if getattr(e, "response", None):
-                error_message = e.response.text
+                error_message = f'Provider returned HTTP {e.response.status_code}'
 
             logger.error(
                 f"WhatsApp API Error: {error_message}"
