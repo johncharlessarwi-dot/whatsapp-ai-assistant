@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/readme/project-motion.svg" width="100%" alt="WHATSAPP AI ASSISTANT animated overview banner" />
+</div>
+
 # 🤖 WhatsApp AI Assistant
 
 A production-ready WhatsApp AI agent with RAG, intelligent LLM routing, and persistent memory.
