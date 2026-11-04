@@ -5,6 +5,11 @@ from app.rag.retriever import RAGService
 from app.models import User, Message
 from app import db
 import logging
+import os
+from app.utils.webhook_security import verify_meta_signature
+from app.utils.message_policy import validate_inbound_text
+from app.utils.webhook_events import extract_text_events
+from app.utils.phone import normalize_recipient
 
 webhook_bp = Blueprint('webhook', __name__)
 logger = logging.getLogger(__name__)
@@ -24,29 +29,30 @@ def verify():
 
 @webhook_bp.route('/', methods=['POST'], strict_slashes=False)
 def handle_message():
-    data = request.get_json()
-    
-    # Check if it's a valid WhatsApp message
-    if not data or 'entry' not in data:
-        return jsonify({"status": "ignored"}), 200
+    # Verify the exact raw bytes before parsing JSON or invoking any external service.
+    raw = request.get_data(cache=True)
+    if len(raw) > 64 * 1024:
+        return jsonify({"error": "payload_too_large"}), 413
+    signature = request.headers.get("X-Hub-Signature-256")
+    if not verify_meta_signature(raw, signature, os.environ.get("META_APP_SECRET")):
+        return jsonify({"error": "invalid_signature"}), 403
 
-    try:
-        entry = data['entry'][0]
-        changes = entry['changes'][0]
-        value = changes['value']
-        
-        if 'messages' in value:
-            message_obj = value['messages'][0]
-            whatsapp_number = message_obj['from']
-            
-            if 'text' in message_obj:
-                user_text = message_obj['text']['body']
-                process_user_message(whatsapp_number, user_text)
-            
-    except Exception as e:
-        logger.error(f"Error parsing webhook: {e}")
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"error": "invalid_json"}), 400
 
-    return jsonify({"status": "success"}), 200
+    for number, body in extract_text_events(data):
+        try:
+            safe_number = normalize_recipient(number)
+            safe_text = validate_inbound_text(body)
+            process_user_message(safe_number, safe_text)
+        except ValueError:
+            logger.warning("Rejected malformed WhatsApp text event")
+        except Exception:
+            logger.exception("WhatsApp text event processing failed")
+            return jsonify({"error": "processing_failed"}), 503
+
+    return jsonify({"status": "accepted"}), 200
 
 def process_user_message(whatsapp_number, user_text):
     """
