@@ -6,6 +6,7 @@ from app.models import User, Message
 from app import db
 import logging
 import os
+import json
 from app.utils.webhook_security import verify_meta_signature
 from app.utils.message_policy import validate_inbound_text
 from app.utils.webhook_events import extract_text_events
@@ -30,14 +31,18 @@ def verify():
 @webhook_bp.route('/', methods=['POST'], strict_slashes=False)
 def handle_message():
     # Verify the exact raw bytes before parsing JSON or invoking any external service.
-    raw = request.get_data(cache=True)
+    # Cap the stream read itself, including chunked requests without Content-Length.
+    raw = request.stream.read(64 * 1024 + 1)
     if len(raw) > 64 * 1024:
         return jsonify({"error": "payload_too_large"}), 413
     signature = request.headers.get("X-Hub-Signature-256")
     if not verify_meta_signature(raw, signature, os.environ.get("META_APP_SECRET")):
         return jsonify({"error": "invalid_signature"}), 403
 
-    data = request.get_json(silent=True)
+    try:
+        data = json.loads(raw)
+    except (UnicodeDecodeError, ValueError):
+        return jsonify({"error": "invalid_json"}), 400
     if not isinstance(data, dict):
         return jsonify({"error": "invalid_json"}), 400
 
