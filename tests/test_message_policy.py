@@ -8,9 +8,15 @@ class MessagePolicyTests(unittest.TestCase):
         self.assertEqual(validate_inbound_text("  Habari  "), "Habari")
         self.assertEqual(validate_outbound_text("  Sawa  "), "Sawa")
 
+    def test_allows_multiline_text_and_length_boundary(self):
+        for validator in (validate_inbound_text, validate_outbound_text):
+            with self.subTest(validator=validator.__name__):
+                self.assertEqual(validator("Habari\nJohn\t!\r\n"), "Habari\nJohn\t!")
+                self.assertEqual(validator("x" * 4000), "x" * 4000)
+
     def test_rejects_malformed_messages(self):
-        for value in ("", "x" * 4001, "a\x00b", None):
-            with self.subTest(value_type=type(value).__name__), self.assertRaises(ValueError):
-                validate_inbound_text(value)
-        with self.assertRaises(ValueError):
-            validate_outbound_text("x" * 4001)
+        for validator in (validate_inbound_text, validate_outbound_text):
+            for value in ("", "x" * 4001, "a\x00b", "a\x1bb", "a\x7fb", None):
+                with self.subTest(validator=validator.__name__, value=repr(value)):
+                    with self.assertRaises(ValueError):
+                        validator(value)
