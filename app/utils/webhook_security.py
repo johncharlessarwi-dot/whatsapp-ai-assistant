@@ -6,6 +6,8 @@ import hmac
 def verify_meta_signature(raw_body, signature, app_secret):
     if not isinstance(raw_body, bytes) or not isinstance(signature, str) or not isinstance(app_secret, str) or not app_secret:
         return False
+    if len(app_secret) > 4096:
+        return False
     prefix = "sha256="
     if not signature.startswith(prefix) or len(signature) != len(prefix) + 64:
         return False
