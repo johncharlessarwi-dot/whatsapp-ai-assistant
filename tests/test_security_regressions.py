@@ -25,3 +25,7 @@ class SecurityRegressionTests(unittest.TestCase):
     def test_phone_rejects_multiple_plus_prefixes(self):
         with self.assertRaises(ValueError):
             normalize_recipient('++255698170989')
+
+    def test_phone_rejects_triple_plus_prefixes(self):
+        with self.assertRaises(ValueError):
+            normalize_recipient('+++255698170989')
