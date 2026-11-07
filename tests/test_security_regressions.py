@@ -84,3 +84,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_rejects_missing_algorithm_prefix(self):
         self.assertFalse(verify_meta_signature(self.RAW, self.signature()[7:], self.SECRET))
+
+    def test_signature_rejects_wrong_body(self):
+        self.assertFalse(verify_meta_signature(self.RAW + b'!', self.signature(), self.SECRET))
