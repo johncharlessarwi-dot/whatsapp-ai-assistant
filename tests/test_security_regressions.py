@@ -141,3 +141,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_events_reject_oversized_text_bodies(self):
         self.assertEqual(extract_text_events(self.event(body='x' * 4001)), [])
+
+    def test_events_reject_non_object_payloads(self):
+        self.assertEqual(extract_text_events([]), [])
