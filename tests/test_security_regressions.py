@@ -40,3 +40,7 @@ class SecurityRegressionTests(unittest.TestCase):
     def test_phone_rejects_trailing_whitespace(self):
         with self.assertRaises(ValueError):
             normalize_recipient('255698170989 ')
+
+    def test_phone_rejects_long_phone_inputs(self):
+        with self.assertRaises(ValueError):
+            normalize_recipient('1' * 17)
