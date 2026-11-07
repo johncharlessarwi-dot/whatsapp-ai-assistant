@@ -78,3 +78,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_accepts_body_within_limit(self):
         self.assertTrue(verify_meta_signature(self.RAW, self.signature(), self.SECRET))
+
+    def test_signature_rejects_oversized_header(self):
+        self.assertFalse(verify_meta_signature(self.RAW, 'sha256=' + 'a' * 100, self.SECRET))
