@@ -24,4 +24,6 @@ def extract_text_events(payload, max_entries=10):
                 text = message.get("text")
                 if isinstance(text, dict) and isinstance(text.get("body"), str) and 0 < len(text["body"]) <= 4000 and isinstance(message.get("from"), str) and 9 <= len(message["from"]) <= 16:
                     result.append((message["from"], text["body"]))
+                    if len(result) >= 100:
+                        return result
     return result[:100]
