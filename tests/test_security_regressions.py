@@ -56,3 +56,6 @@ class SecurityRegressionTests(unittest.TestCase):
     def test_phone_rejects_unsafe_phone_symbols(self):
         with self.assertRaises(ValueError):
             normalize_recipient('255698@170989')
+
+    def test_phone_accepts_plain_digits(self):
+        self.assertEqual(normalize_recipient('255698170989'), '255698170989')
