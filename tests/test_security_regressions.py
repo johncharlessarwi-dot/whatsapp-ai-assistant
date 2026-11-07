@@ -81,3 +81,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_rejects_oversized_header(self):
         self.assertFalse(verify_meta_signature(self.RAW, 'sha256=' + 'a' * 100, self.SECRET))
+
+    def test_signature_rejects_missing_algorithm_prefix(self):
+        self.assertFalse(verify_meta_signature(self.RAW, self.signature()[7:], self.SECRET))
