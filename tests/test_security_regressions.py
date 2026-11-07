@@ -118,3 +118,7 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_outbound_messages_allow_tabs(self):
         self.assertEqual(validate_outbound_text('Habari\tJohn'), 'Habari\tJohn')
+
+    def test_inbound_messages_reject_control_bytes(self):
+        with self.assertRaises(ValueError):
+            validate_inbound_text('Habari\x00John')
