@@ -115,3 +115,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_inbound_messages_allow_newlines(self):
         self.assertEqual(validate_inbound_text('Habari\nJohn'), 'Habari\nJohn')
+
+    def test_outbound_messages_allow_tabs(self):
+        self.assertEqual(validate_outbound_text('Habari\tJohn'), 'Habari\tJohn')
