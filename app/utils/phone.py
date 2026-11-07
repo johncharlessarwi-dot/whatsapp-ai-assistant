@@ -5,6 +5,8 @@ import re
 def normalize_recipient(value):
     if not isinstance(value, str):
         raise ValueError("Recipient must be text")
+    if len(value) > 16:
+        raise ValueError('Recipient number is too long')
     if value != value.strip():
         raise ValueError('Recipient must not contain surrounding whitespace')
     digits = value[1:] if value.startswith('+') else value
