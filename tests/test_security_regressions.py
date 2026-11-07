@@ -48,3 +48,7 @@ class SecurityRegressionTests(unittest.TestCase):
     def test_phone_rejects_non_string_inputs(self):
         with self.assertRaises(ValueError):
             normalize_recipient(255698170989)
+
+    def test_phone_rejects_embedded_newlines(self):
+        with self.assertRaises(ValueError):
+            normalize_recipient('255698\n170989')
