@@ -87,3 +87,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_rejects_wrong_body(self):
         self.assertFalse(verify_meta_signature(self.RAW + b'!', self.signature(), self.SECRET))
+
+    def test_signature_rejects_non_bytes_body(self):
+        self.assertFalse(verify_meta_signature('text', self.signature(), self.SECRET))
