@@ -112,3 +112,6 @@ class SecurityRegressionTests(unittest.TestCase):
     def test_outbound_messages_reject_direction_marks(self):
         with self.assertRaises(ValueError):
             validate_outbound_text('Hello\u200EWorld')
+
+    def test_inbound_messages_allow_newlines(self):
+        self.assertEqual(validate_inbound_text('Habari\nJohn'), 'Habari\nJohn')
