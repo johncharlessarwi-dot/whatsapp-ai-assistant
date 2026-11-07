@@ -122,3 +122,7 @@ class SecurityRegressionTests(unittest.TestCase):
     def test_inbound_messages_reject_control_bytes(self):
         with self.assertRaises(ValueError):
             validate_inbound_text('Habari\x00John')
+
+    def test_outbound_messages_reject_oversized_text(self):
+        with self.assertRaises(ValueError):
+            validate_outbound_text('x' * 4001)
