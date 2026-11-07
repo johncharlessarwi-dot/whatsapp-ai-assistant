@@ -59,3 +59,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_phone_accepts_plain_digits(self):
         self.assertEqual(normalize_recipient('255698170989'), '255698170989')
+
+    def test_signature_rejects_numeric_signing_key(self):
+        self.assertFalse(verify_meta_signature(self.RAW, self.signature(), 12345))
