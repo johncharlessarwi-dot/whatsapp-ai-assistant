@@ -93,3 +93,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_rejects_non_hex_digest(self):
         self.assertFalse(verify_meta_signature(self.RAW, 'sha256=' + 'z' * 64, self.SECRET))
+
+    def test_signature_accepts_uppercase_hex_digest(self):
+        self.assertTrue(verify_meta_signature(self.RAW, self.signature().upper().replace('SHA256=', 'sha256='), self.SECRET))
