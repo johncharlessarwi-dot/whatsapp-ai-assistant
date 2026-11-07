@@ -138,3 +138,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_events_reject_empty_text_bodies(self):
         self.assertEqual(extract_text_events(self.event(body='')), [])
+
+    def test_events_reject_oversized_text_bodies(self):
+        self.assertEqual(extract_text_events(self.event(body='x' * 4001)), [])
