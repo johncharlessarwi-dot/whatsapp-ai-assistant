@@ -71,3 +71,7 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_accepts_valid_raw_signature(self):
         self.assertTrue(verify_meta_signature(self.RAW, self.signature(), self.SECRET))
+
+    def test_signature_rejects_oversized_event_body(self):
+        body = b'x' * (64 * 1024 + 1)
+        self.assertFalse(verify_meta_signature(body, self.signature(body), self.SECRET))
