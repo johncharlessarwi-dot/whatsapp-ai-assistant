@@ -104,3 +104,7 @@ class SecurityRegressionTests(unittest.TestCase):
     def test_outbound_messages_reject_bidi_overrides(self):
         with self.assertRaises(ValueError):
             validate_outbound_text('Hello\u202DWorld')
+
+    def test_inbound_messages_reject_direction_marks(self):
+        with self.assertRaises(ValueError):
+            validate_inbound_text('Hello\u200FWorld')
