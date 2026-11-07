@@ -96,3 +96,7 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_accepts_uppercase_hex_digest(self):
         self.assertTrue(verify_meta_signature(self.RAW, self.signature().upper().replace('SHA256=', 'sha256='), self.SECRET))
+
+    def test_inbound_messages_reject_bidi_overrides(self):
+        with self.assertRaises(ValueError):
+            validate_inbound_text('Hello\u202EWorld')
