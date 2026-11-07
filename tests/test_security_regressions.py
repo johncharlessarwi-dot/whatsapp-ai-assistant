@@ -68,3 +68,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_rejects_oversized_signing_key(self):
         self.assertFalse(verify_meta_signature(self.RAW, self.signature(), 'k' * 4097))
+
+    def test_signature_accepts_valid_raw_signature(self):
+        self.assertTrue(verify_meta_signature(self.RAW, self.signature(), self.SECRET))
