@@ -129,3 +129,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_events_accept_valid_text_message(self):
         self.assertEqual(extract_text_events(self.event()), [('255698170989', 'Habari')])
+
+    def test_events_reject_short_sender_ids(self):
+        self.assertEqual(extract_text_events(self.event(sender='123')), [])
