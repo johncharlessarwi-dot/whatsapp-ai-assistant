@@ -21,3 +21,7 @@ class SecurityRegressionTests(unittest.TestCase):
             {'type': 'text', 'from': sender, 'text': {'body': body}}
         ]}}]}]}
 
+
+    def test_phone_rejects_multiple_plus_prefixes(self):
+        with self.assertRaises(ValueError):
+            normalize_recipient('++255698170989')
