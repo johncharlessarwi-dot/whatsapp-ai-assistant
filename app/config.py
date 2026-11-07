@@ -5,6 +5,8 @@ load_dotenv()
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-key-123')
+    if os.environ.get('FLASK_ENV') == 'production' and (SECRET_KEY == 'dev-key-123' or len(SECRET_KEY) < 32):
+        raise RuntimeError('A strong SECRET_KEY must be configured in production')
     basedir = os.path.abspath(os.path.dirname(__file__))
     # Move up one level if config.py is in app/
     project_root = os.path.dirname(basedir)
