@@ -132,3 +132,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_events_reject_short_sender_ids(self):
         self.assertEqual(extract_text_events(self.event(sender='123')), [])
+
+    def test_events_reject_long_sender_ids(self):
+        self.assertEqual(extract_text_events(self.event(sender='1' * 17)), [])
