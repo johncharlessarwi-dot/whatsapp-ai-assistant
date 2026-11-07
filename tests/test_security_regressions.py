@@ -90,3 +90,6 @@ class SecurityRegressionTests(unittest.TestCase):
 
     def test_signature_rejects_non_bytes_body(self):
         self.assertFalse(verify_meta_signature('text', self.signature(), self.SECRET))
+
+    def test_signature_rejects_non_hex_digest(self):
+        self.assertFalse(verify_meta_signature(self.RAW, 'sha256=' + 'z' * 64, self.SECRET))
