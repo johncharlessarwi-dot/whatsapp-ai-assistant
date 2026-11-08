@@ -52,6 +52,7 @@ def handle_message():
         except ValueError:
             logger.warning("Rejected malformed WhatsApp text event")
         except Exception:
+            db.session.rollback()
             logger.exception("WhatsApp text event processing failed")
             return jsonify({"error": "processing_failed"}), 503
 
