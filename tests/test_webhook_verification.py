@@ -1,41 +1,25 @@
-"""Regression coverage for Meta webhook subscription verification."""
+"""Regression tests for Meta webhook subscription verification."""
 import unittest
-from flask import Flask
-from app.routes.webhook import webhook_bp
+from app.utils.subscription import verify_subscription
 
 
 class WebhookVerificationTests(unittest.TestCase):
-    def setUp(self):
-        app = Flask(__name__)
-        app.config['WHATSAPP_VERIFY_TOKEN'] = 'test-secret-token'
-        app.register_blueprint(webhook_bp, url_prefix='/webhook')
-        self.client = app.test_client()
+    TOKEN = 'test-secret-token'
 
     def test_valid_subscription(self):
-        response = self.client.get('/webhook/', query_string={
-            'hub.mode': 'subscribe', 'hub.verify_token': 'test-secret-token',
-            'hub.challenge': '12345',
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.get_data(as_text=True), '12345')
+        self.assertEqual(verify_subscription('subscribe', self.TOKEN, '12345', self.TOKEN), (200, '12345'))
 
     def test_missing_challenge_is_bad_request(self):
-        response = self.client.get('/webhook/', query_string={
-            'hub.mode': 'subscribe', 'hub.verify_token': 'test-secret-token',
-        })
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(verify_subscription('subscribe', self.TOKEN, None, self.TOKEN)[0], 400)
 
     def test_wrong_token_is_forbidden(self):
-        response = self.client.get('/webhook/', query_string={
-            'hub.mode': 'subscribe', 'hub.verify_token': 'wrong', 'hub.challenge': '123',
-        })
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(verify_subscription('subscribe', 'wrong', '123', self.TOKEN)[0], 403)
 
     def test_missing_mode_is_bad_request(self):
-        response = self.client.get('/webhook/', query_string={
-            'hub.verify_token': 'test-secret-token', 'hub.challenge': '123',
-        })
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(verify_subscription(None, self.TOKEN, '123', self.TOKEN)[0], 400)
+
+    def test_unconfigured_token_fails_closed(self):
+        self.assertEqual(verify_subscription('subscribe', self.TOKEN, '123', None)[0], 403)
 
 
 if __name__ == '__main__':
