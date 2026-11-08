@@ -70,18 +70,14 @@ class WhatsAppService:
                 "data": response.json()
             }
 
-        except requests.exceptions.RequestException as e:
-
-            error_message = str(e)
-
-            if getattr(e, "response", None):
-                error_message = f'Provider returned HTTP {e.response.status_code}'
-
-            logger.error(
-                f"WhatsApp API Error: {error_message}"
-            )
-
+        except requests.exceptions.RequestException as exc:
+            # Do not log or return exception URLs/headers; they can contain credentials.
+            status_code = getattr(getattr(exc, "response", None), "status_code", None)
+            if status_code is not None:
+                logger.error("WhatsApp API request failed with HTTP %s", status_code)
+            else:
+                logger.error("WhatsApp API transport request failed")
             return {
                 "success": False,
-                "error": error_message
+                "error": "WhatsApp provider request failed"
             }
