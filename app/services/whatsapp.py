@@ -3,6 +3,7 @@ from flask import current_app
 import logging
 from app.utils.message_policy import validate_outbound_text
 from app.utils.phone import normalize_recipient
+from app.utils.graph_config import validate_phone_number_id
 
 logger = logging.getLogger(__name__)
 
@@ -10,15 +11,16 @@ class WhatsAppService:
 
     def __init__(self):
         self.token = current_app.config.get("WHATSAPP_TOKEN")
-        self.phone_number_id = current_app.config.get(
+        raw_phone_number_id = current_app.config.get(
             "WHATSAPP_PHONE_NUMBER_ID"
         )
 
-        if not self.token or not self.phone_number_id:
+        if not self.token or not raw_phone_number_id:
             raise ValueError(
                 "WhatsApp configuration missing"
             )
 
+        self.phone_number_id = validate_phone_number_id(raw_phone_number_id)
         self.session = requests.Session()
 
         self.url = (
