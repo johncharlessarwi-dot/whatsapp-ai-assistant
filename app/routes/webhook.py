@@ -7,6 +7,7 @@ from app import db
 import logging
 import os
 import json
+import hmac
 from app.utils.webhook_security import verify_meta_signature
 from app.utils.message_policy import validate_inbound_text
 from app.utils.webhook_events import extract_text_events
@@ -21,12 +22,14 @@ def verify():
     token = request.args.get('hub.verify_token')
     challenge = request.args.get('hub.challenge')
     
-    if mode and token:
-        if mode == 'subscribe' and token == current_app.config['WHATSAPP_VERIFY_TOKEN']:
-            return challenge, 200
-        else:
-            return 'Forbidden', 403
-    return 'Bad Request', 400
+    if mode != 'subscribe' or not token or not challenge:
+        return 'Bad Request', 400
+    expected_token = current_app.config.get('WHATSAPP_VERIFY_TOKEN')
+    if not expected_token:
+        return 'Forbidden', 403
+    if hmac.compare_digest(token, expected_token):
+        return challenge, 200
+    return 'Forbidden', 403
 
 @webhook_bp.route('/', methods=['POST'], strict_slashes=False)
 def handle_message():
