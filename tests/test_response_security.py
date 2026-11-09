@@ -25,3 +25,9 @@ class SensitiveCacheTests(unittest.TestCase):
     def test_cache_disabled(self):
         response = apply_security_headers(Response('ok'))
         self.assertEqual(response.headers['Cache-Control'], 'no-store')
+
+
+class BrowserPermissionTests(unittest.TestCase):
+    def test_disallows_sensitive_browser_features(self):
+        response = apply_security_headers(Response('ok'))
+        self.assertIn('camera=()', response.headers['Permissions-Policy'])
