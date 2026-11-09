@@ -63,7 +63,7 @@ def extract_identified_text_events(payload):
                 if not isinstance(message, dict) or message.get("type") != "text":
                     continue
                 sender, message_id, text = message.get("from"), message.get("id"), message.get("text")
-                if not (isinstance(sender, str) and 9 <= len(sender) <= 16):
+                if not (isinstance(sender, str) and sender.isascii() and sender.isdigit() and 9 <= len(sender) <= 16):
                     continue
                 if not (isinstance(message_id, str) and 7 <= len(message_id) <= 255 and message_id.startswith("wamid.")):
                     continue
