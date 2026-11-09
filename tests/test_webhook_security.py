@@ -21,3 +21,8 @@ class MetaSignatureTests(unittest.TestCase):
 class MetaSigningKeyQualityTests(unittest.TestCase):
     def test_rejects_whitespace_only_signing_key(self):
         self.assertFalse(verify_meta_signature(b'{}', 'sha256=' + '0' * 64, '   '))
+
+
+class MetaSigningKeyControlTests(unittest.TestCase):
+    def test_rejects_control_character_in_signing_secret(self):
+        self.assertFalse(verify_meta_signature(b'{}', 'sha256=' + '0' * 64, 'secret\n'))
