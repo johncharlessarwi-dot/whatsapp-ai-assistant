@@ -63,3 +63,9 @@ class RequestBodyBudgetTests(unittest.TestCase):
         from app.utils.response_security import configure_request_limit
         app = configure_request_limit(Flask(__name__))
         self.assertEqual(app.config['MAX_CONTENT_LENGTH'], 64 * 1024)
+
+
+class OverwriteUnsafeHeadersTests(unittest.TestCase):
+    def test_overrides_insecure_frame_header(self):
+        response = Response('ok', headers={'X-Frame-Options': 'ALLOWALL'})
+        self.assertEqual(apply_security_headers(response).headers['X-Frame-Options'], 'DENY')
