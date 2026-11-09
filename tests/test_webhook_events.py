@@ -22,3 +22,10 @@ class ExtractorLimitTests(unittest.TestCase):
 
     def test_unbounded_limit_is_rejected(self):
         self.assertEqual(extract_text_events({'entry': []}, max_entries=1000000), [])
+
+
+class LegacySenderValidationTests(unittest.TestCase):
+    def test_rejects_alphabetic_sender_before_processing(self):
+        message = {'type': 'text', 'from': 'abcdefghi', 'text': {'body': 'Hello'}}
+        payload = {'entry': [{'changes': [{'value': {'messages': [message]}}]}]}
+        self.assertEqual(extract_text_events(payload), [])
