@@ -10,6 +10,8 @@ def verify_subscription(mode, token, challenge, expected_token):
         return 400, 'Bad Request'
     if not isinstance(expected_token, str) or not expected_token:
         return 403, 'Forbidden'
+    if len(token) > 4096 or len(expected_token) > 4096:
+        return 403, 'Forbidden'
     if hmac.compare_digest(token, expected_token):
         return 200, challenge
     return 403, 'Forbidden'
