@@ -13,3 +13,9 @@ class FramePolicyTests(unittest.TestCase):
     def test_frame_protection_enabled(self):
         response = apply_security_headers(Response('ok'))
         self.assertEqual(response.headers['X-Frame-Options'], 'DENY')
+
+
+class ReferrerPolicyTests(unittest.TestCase):
+    def test_referrer_policy_disallows_leakage(self):
+        response = apply_security_headers(Response('ok'))
+        self.assertEqual(response.headers['Referrer-Policy'], 'no-referrer')
