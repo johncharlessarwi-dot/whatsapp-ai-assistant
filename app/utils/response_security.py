@@ -7,4 +7,5 @@ def apply_security_headers(response):
     response.headers['Referrer-Policy'] = 'no-referrer'
     response.headers['Cache-Control'] = 'no-store'
     response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+    response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'
     return response
