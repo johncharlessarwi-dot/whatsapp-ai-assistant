@@ -28,3 +28,9 @@ class GraphConfigTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class GraphZeroIdTests(unittest.TestCase):
+    def test_rejects_zero_only_number_id(self):
+        with self.assertRaises(ValueError):
+            validate_phone_number_id('000000')

@@ -10,6 +10,10 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    from .utils.response_security import apply_security_headers, configure_request_limit
+    configure_request_limit(app)
+    app.after_request(apply_security_headers)
+
     db.init_app(app)
     migrate.init_app(app, db)
 
