@@ -31,3 +31,9 @@ class BrowserPermissionTests(unittest.TestCase):
     def test_disallows_sensitive_browser_features(self):
         response = apply_security_headers(Response('ok'))
         self.assertIn('camera=()', response.headers['Permissions-Policy'])
+
+
+class ResourcePolicyTests(unittest.TestCase):
+    def test_cross_origin_resource_policy(self):
+        response = apply_security_headers(Response('ok'))
+        self.assertEqual(response.headers['Cross-Origin-Resource-Policy'], 'same-origin')
