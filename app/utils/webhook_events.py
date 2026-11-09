@@ -3,6 +3,8 @@ def extract_text_events(payload, max_entries=10):
     if not isinstance(payload, dict):
         return []
     entries = payload.get("entry")
+    if type(max_entries) is not int or not 1 <= max_entries <= 10:
+        return []
     if not isinstance(entries, list) or len(entries) > max_entries:
         return []
     result = []
