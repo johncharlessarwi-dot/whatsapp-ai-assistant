@@ -6,7 +6,7 @@ MAX_OUTBOUND_CHARS = 4000
 
 def _contains_disallowed_control(text):
     """Keep multiline and tabbed messages, but reject other ASCII controls."""
-    return any((ord(char) < 32 and char not in "\t\n\r") or ord(char) == 127 or 0x202A <= ord(char) <= 0x202E or 0x2066 <= ord(char) <= 0x2069 or ord(char) in (0x200E, 0x200F) for char in text)
+    return any((ord(char) < 32 and char not in "\t\n\r") or ord(char) == 127 or 0x202A <= ord(char) <= 0x202E or 0x2066 <= ord(char) <= 0x2069 or ord(char) in (0x200E, 0x200F) or ord(char) in (0xFFFE, 0xFFFF) for char in text)
 
 
 def validate_inbound_text(value):
