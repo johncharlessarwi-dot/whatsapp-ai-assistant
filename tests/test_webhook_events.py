@@ -14,3 +14,11 @@ class WebhookEventTests(unittest.TestCase):
     def test_handles_malformed_data_without_throwing(self):
         for value in (None, {}, {"entry": [None]}, {"entry": "wrong"}):
             self.assertEqual(extract_text_events(value), [])
+
+
+class ExtractorLimitTests(unittest.TestCase):
+    def test_boolean_limit_is_rejected(self):
+        self.assertEqual(extract_text_events({'entry': []}, max_entries=True), [])
+
+    def test_unbounded_limit_is_rejected(self):
+        self.assertEqual(extract_text_events({'entry': []}, max_entries=1000000), [])
