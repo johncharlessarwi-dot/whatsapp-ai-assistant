@@ -49,3 +49,9 @@ class OpenerIsolationTests(unittest.TestCase):
     def test_opener_policy_enforces_same_origin(self):
         response = apply_security_headers(Response('ok'))
         self.assertEqual(response.headers['Cross-Origin-Opener-Policy'], 'same-origin')
+
+
+class DnsPrefetchTests(unittest.TestCase):
+    def test_dns_prefetch_is_disabled(self):
+        response = apply_security_headers(Response('ok'))
+        self.assertEqual(response.headers['X-DNS-Prefetch-Control'], 'off')
