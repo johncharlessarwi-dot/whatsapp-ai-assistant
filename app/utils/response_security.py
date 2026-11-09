@@ -9,4 +9,5 @@ def apply_security_headers(response):
     response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
     response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'
     response.headers['X-Permitted-Cross-Domain-Policies'] = 'none'
+    response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
     return response
