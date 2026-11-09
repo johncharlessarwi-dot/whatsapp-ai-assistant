@@ -41,6 +41,7 @@ def extract_identified_text_events(payload):
     if not isinstance(entries, list) or len(entries) > 10:
         return []
     events = []
+    seen_ids = set()
     for entry in entries:
         if not isinstance(entry, dict):
             continue
