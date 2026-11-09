@@ -1,6 +1,11 @@
 """Consistent defensive HTTP headers for webhook and dashboard responses."""
 
 
+def configure_request_limit(app):
+    app.config['MAX_CONTENT_LENGTH'] = 64 * 1024
+    return app
+
+
 def apply_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
