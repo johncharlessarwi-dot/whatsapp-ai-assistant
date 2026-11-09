@@ -20,3 +20,9 @@ class MessagePolicyTests(unittest.TestCase):
                 with self.subTest(validator=validator.__name__, value=repr(value)):
                     with self.assertRaises(ValueError):
                         validator(value)
+
+
+class UnicodeNoncharacterTests(unittest.TestCase):
+    def test_inbound_rejects_noncharacter(self):
+        with self.assertRaises(ValueError):
+            validate_inbound_text('safe\ufffeunsafe')
