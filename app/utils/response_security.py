@@ -10,4 +10,5 @@ def apply_security_headers(response):
     response.headers['Cross-Origin-Resource-Policy'] = 'same-origin'
     response.headers['X-Permitted-Cross-Domain-Policies'] = 'none'
     response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
+    response.headers['X-DNS-Prefetch-Control'] = 'off'
     return response
