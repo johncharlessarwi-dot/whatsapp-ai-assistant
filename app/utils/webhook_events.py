@@ -62,7 +62,7 @@ def extract_identified_text_events(payload):
                 sender, message_id, text = message.get("from"), message.get("id"), message.get("text")
                 if not (isinstance(sender, str) and 9 <= len(sender) <= 16):
                     continue
-                if not (isinstance(message_id, str) and 1 <= len(message_id) <= 255 and message_id.startswith("wamid.")):
+                if not (isinstance(message_id, str) and 7 <= len(message_id) <= 255 and message_id.startswith("wamid.")):
                     continue
                 if not (isinstance(text, dict) and isinstance(text.get("body"), str) and 0 < len(text["body"]) <= 4000):
                     continue
