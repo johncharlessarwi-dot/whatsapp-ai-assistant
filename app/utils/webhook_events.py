@@ -67,6 +67,9 @@ def extract_identified_text_events(payload):
                     continue
                 if not (isinstance(text, dict) and isinstance(text.get("body"), str) and 0 < len(text["body"]) <= 4000):
                     continue
+                if message_id in seen_ids:
+                    continue
+                seen_ids.add(message_id)
                 events.append((message_id, sender, text["body"]))
                 if len(events) >= 100:
                     return events
