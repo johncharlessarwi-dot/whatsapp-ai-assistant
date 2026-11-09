@@ -55,3 +55,11 @@ class DnsPrefetchTests(unittest.TestCase):
     def test_dns_prefetch_is_disabled(self):
         response = apply_security_headers(Response('ok'))
         self.assertEqual(response.headers['X-DNS-Prefetch-Control'], 'off')
+
+
+class RequestBodyBudgetTests(unittest.TestCase):
+    def test_global_payload_cap_is_64_kib(self):
+        from flask import Flask
+        from app.utils.response_security import configure_request_limit
+        app = configure_request_limit(Flask(__name__))
+        self.assertEqual(app.config['MAX_CONTENT_LENGTH'], 64 * 1024)
