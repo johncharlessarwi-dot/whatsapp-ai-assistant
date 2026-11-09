@@ -24,3 +24,8 @@ class WebhookVerificationTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_html_challenge_is_not_reflected():
+    status, body = verify_subscription('subscribe', 'test-secret-token', '<script>alert(1)</script>', 'test-secret-token')
+    assert status == 400 and '<script>' not in body
