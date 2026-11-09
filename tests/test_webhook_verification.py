@@ -34,3 +34,11 @@ def test_html_challenge_is_not_reflected():
 def test_oversized_verification_token_is_rejected():
     token = 't' * 4097
     assert verify_subscription('subscribe', token, '123', token)[0] == 403
+
+
+class SubscriptionSecurityRegressionTests(unittest.TestCase):
+    def test_html_reflection(self):
+        test_html_challenge_is_not_reflected()
+
+    def test_oversized_token(self):
+        test_oversized_verification_token_is_rejected()
