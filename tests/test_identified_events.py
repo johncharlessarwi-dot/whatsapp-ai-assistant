@@ -43,3 +43,10 @@ class DuplicateMessageIdTests(unittest.TestCase):
         message = {'id': 'wamid.DUP', 'type': 'text', 'from': '255698170989', 'text': {'body': 'Hello'}}
         payload = {'entry': [{'changes': [{'value': {'messages': [message, message]}}]}]}
         self.assertEqual(extract_identified_text_events(payload), [('wamid.DUP', '255698170989', 'Hello')])
+
+
+class IdentifiedSenderValidationTests(unittest.TestCase):
+    def test_rejects_alphabetic_sender(self):
+        message = {'id': 'wamid.SENDER', 'type': 'text', 'from': 'abcdefghi', 'text': {'body': 'Hello'}}
+        payload = {'entry': [{'changes': [{'value': {'messages': [message]}}]}]}
+        self.assertEqual(extract_identified_text_events(payload), [])
