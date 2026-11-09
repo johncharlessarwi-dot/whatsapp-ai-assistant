@@ -26,3 +26,9 @@ class UnicodeNoncharacterTests(unittest.TestCase):
     def test_inbound_rejects_noncharacter(self):
         with self.assertRaises(ValueError):
             validate_inbound_text('safe\ufffeunsafe')
+
+
+class OutboundUnicodeNoncharacterTests(unittest.TestCase):
+    def test_outbound_rejects_noncharacter(self):
+        with self.assertRaises(ValueError):
+            validate_outbound_text('safe\uffffunsafe')
