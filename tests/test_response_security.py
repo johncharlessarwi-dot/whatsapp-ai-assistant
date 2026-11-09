@@ -69,3 +69,9 @@ class OverwriteUnsafeHeadersTests(unittest.TestCase):
     def test_overrides_insecure_frame_header(self):
         response = Response('ok', headers={'X-Frame-Options': 'ALLOWALL'})
         self.assertEqual(apply_security_headers(response).headers['X-Frame-Options'], 'DENY')
+
+
+class OverwriteCachePolicyTests(unittest.TestCase):
+    def test_overrides_cacheable_response_headers(self):
+        response = Response('ok', headers={'Cache-Control': 'public, max-age=3600'})
+        self.assertEqual(apply_security_headers(response).headers['Cache-Control'], 'no-store')
