@@ -36,3 +36,10 @@ class EmptyMetaIdentifierTests(unittest.TestCase):
         message = {'id': 'wamid.', 'type': 'text', 'from': '255698170989', 'text': {'body': 'Hi'}}
         payload = {'entry': [{'changes': [{'value': {'messages': [message]}}]}]}
         self.assertEqual(extract_identified_text_events(payload), [])
+
+
+class DuplicateMessageIdTests(unittest.TestCase):
+    def test_duplicate_id_processed_once_per_payload(self):
+        message = {'id': 'wamid.DUP', 'type': 'text', 'from': '255698170989', 'text': {'body': 'Hello'}}
+        payload = {'entry': [{'changes': [{'value': {'messages': [message, message]}}]}]}
+        self.assertEqual(extract_identified_text_events(payload), [('wamid.DUP', '255698170989', 'Hello')])
