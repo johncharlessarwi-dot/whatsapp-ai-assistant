@@ -19,3 +19,9 @@ class ReferrerPolicyTests(unittest.TestCase):
     def test_referrer_policy_disallows_leakage(self):
         response = apply_security_headers(Response('ok'))
         self.assertEqual(response.headers['Referrer-Policy'], 'no-referrer')
+
+
+class SensitiveCacheTests(unittest.TestCase):
+    def test_cache_disabled(self):
+        response = apply_security_headers(Response('ok'))
+        self.assertEqual(response.headers['Cache-Control'], 'no-store')
