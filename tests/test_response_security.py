@@ -43,3 +43,9 @@ class CrossDomainPolicyTests(unittest.TestCase):
     def test_cross_domain_policy_is_disabled(self):
         response = apply_security_headers(Response('ok'))
         self.assertEqual(response.headers['X-Permitted-Cross-Domain-Policies'], 'none')
+
+
+class OpenerIsolationTests(unittest.TestCase):
+    def test_opener_policy_enforces_same_origin(self):
+        response = apply_security_headers(Response('ok'))
+        self.assertEqual(response.headers['Cross-Origin-Opener-Policy'], 'same-origin')
