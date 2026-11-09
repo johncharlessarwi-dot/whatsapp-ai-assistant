@@ -29,3 +29,10 @@ class IdentifiedEventsTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class EmptyMetaIdentifierTests(unittest.TestCase):
+    def test_rejects_empty_wamid_suffix(self):
+        message = {'id': 'wamid.', 'type': 'text', 'from': '255698170989', 'text': {'body': 'Hi'}}
+        payload = {'entry': [{'changes': [{'value': {'messages': [message]}}]}]}
+        self.assertEqual(extract_identified_text_events(payload), [])
