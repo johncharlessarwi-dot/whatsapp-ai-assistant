@@ -75,3 +75,9 @@ class OverwriteCachePolicyTests(unittest.TestCase):
     def test_overrides_cacheable_response_headers(self):
         response = Response('ok', headers={'Cache-Control': 'public, max-age=3600'})
         self.assertEqual(apply_security_headers(response).headers['Cache-Control'], 'no-store')
+
+
+class OverwriteMimePolicyTests(unittest.TestCase):
+    def test_overrides_unsafe_mime_header(self):
+        response = Response('ok', headers={'X-Content-Type-Options': 'unsafe'})
+        self.assertEqual(apply_security_headers(response).headers['X-Content-Type-Options'], 'nosniff')
