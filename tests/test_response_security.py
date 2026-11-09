@@ -37,3 +37,9 @@ class ResourcePolicyTests(unittest.TestCase):
     def test_cross_origin_resource_policy(self):
         response = apply_security_headers(Response('ok'))
         self.assertEqual(response.headers['Cross-Origin-Resource-Policy'], 'same-origin')
+
+
+class CrossDomainPolicyTests(unittest.TestCase):
+    def test_cross_domain_policy_is_disabled(self):
+        response = apply_security_headers(Response('ok'))
+        self.assertEqual(response.headers['X-Permitted-Cross-Domain-Policies'], 'none')
