@@ -8,6 +8,8 @@ on:
       - "app/services/whatsapp.py"
       - "tests/**"
       - ".github/workflows/whatsapp-security.yml"
+      - ".github/dependabot.yml"
+      - ".gitignore"
   pull_request:
     paths:
       - "app/utils/**"
@@ -15,6 +17,8 @@ on:
       - "app/services/whatsapp.py"
       - "tests/**"
       - ".github/workflows/whatsapp-security.yml"
+      - ".github/dependabot.yml"
+      - ".gitignore"
   workflow_dispatch:
 
 permissions:
